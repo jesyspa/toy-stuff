@@ -1,6 +1,7 @@
 #pragma once
 
-#include "sequence.hpp"
+#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/reverse_fold.hpp>
 #include <type_traits>
 
 // In order to allow synthesis of operators for your class, specialise this template and provide
@@ -9,6 +10,8 @@ template <typename T>
 struct enable_operator_synthesis;
 
 namespace detail {
+using namespace boost::mpl::placeholders;
+namespace mpl = boost::mpl;
 
 // Create an accessor for the pointed-to-member.
 template <typename MP, MP Ptr>
@@ -22,53 +25,46 @@ struct member_accessor {
 // Helper macro to avoid writing out the type.
 #define SYNTH_MEMBER_ACCESSOR(x) ::detail::member_accessor<decltype(&x), &x>
 
-template <typename Head, typename Tail>
-struct meta_equality_op {
-    using type = struct {
-        template <typename T>
-        static bool invoke(T const& lhs, T const& rhs) {
-            if (Head::get(lhs) != Head::get(rhs))
-                return false;
-            return Tail::invoke(lhs, rhs);
-        }
-    };
-};
-
-struct meta_equality_base {
+template <bool Value>
+struct compare_as_value {
     template <typename T>
     static bool invoke(T const&, T const&) {
-        return true;
+        return Value;
+    }
+};
+
+using compare_true = compare_as_value<true>;
+using compare_false = compare_as_value<false>;
+
+template <typename Getter, typename Rest>
+struct compare_equal {
+    template <typename T>
+    static bool invoke(T const& lhs, T const& rhs) {
+        if (Getter::get(lhs) != Getter::get(rhs))
+            return false;
+        return Rest::invoke(lhs, rhs);
+    }
+};
+
+template <typename Getter, typename Rest>
+struct compare_lessthan {
+    template <typename T>
+    static bool invoke(T const& lhs, T const& rhs) {
+        auto const& lhs_val = Getter::get(lhs);
+        auto const& rhs_val = Getter::get(rhs);
+        if (lhs_val < rhs_val)
+            return true;
+        if (lhs_val != rhs_val)
+            return false;
+        return Rest::invoke(lhs, rhs);
     }
 };
 
 template <typename Seq>
-using synthesise_equality = foldr<meta_equality_op, meta_equality_base, Seq>;
-
-template <typename Head, typename Tail>
-struct meta_lessthan_op {
-    using type = struct {
-        template <typename T>
-        static bool invoke(T const& lhs, T const& rhs) {
-            auto const& lhs_head = Head::get(lhs);
-            auto const& rhs_head = Head::get(rhs);
-            if (lhs_head < rhs_head)
-                return true;
-            if (lhs_head != rhs_head)
-                return false;
-            return Tail::invoke(lhs, rhs);
-        }
-    };
-};
-
-struct meta_lessthan_base {
-    template <typename T>
-    static bool invoke(T const&, T const&) {
-        return false;
-    }
-};
+using synthesise_equality = typename mpl::reverse_fold<Seq, compare_true, compare_equal<_2, _1>>::type;
 
 template <typename Seq>
-using synthesise_lessthan = foldr<meta_lessthan_op, meta_lessthan_base, Seq>;
+using synthesise_lessthan = typename mpl::reverse_fold<Seq, compare_false, compare_lessthan<_2, _1>>::type;
 
 template <typename T>
 using bool_if_enabled = typename std::enable_if<enable_operator_synthesis<T>::value, bool>::type;

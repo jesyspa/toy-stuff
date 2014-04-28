@@ -1,4 +1,5 @@
 #include "autogenerate.hpp"
+#include <boost/mpl/vector.hpp>
 #include <iostream>
 #include <string>
 
@@ -9,8 +10,8 @@ struct Example {
 
 template <>
 struct enable_operator_synthesis<Example> : std::true_type {
-    using members = sequence<SYNTH_MEMBER_ACCESSOR(Example::x), SYNTH_MEMBER_ACCESSOR(Example::y),
-                             SYNTH_MEMBER_ACCESSOR(Example::z)>;
+    using members = boost::mpl::vector<SYNTH_MEMBER_ACCESSOR(Example::x), SYNTH_MEMBER_ACCESSOR(Example::y),
+                                       SYNTH_MEMBER_ACCESSOR(Example::z)>;
 };
 
 int main() {
