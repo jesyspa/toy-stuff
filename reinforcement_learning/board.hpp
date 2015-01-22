@@ -6,7 +6,7 @@ enum class State {
 };
 
 struct Board {
-    State board[3][3] = {};
+    State data[3][3] = {};
 
     bool is_empty(Pos pos) const;
     void play(Pos pos, State new_state);

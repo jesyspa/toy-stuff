@@ -1,8 +1,9 @@
 #include "ai.hpp"
+#include "io.hpp"
 #include <random>
 #include <iostream>
 
-std::mt19937 gen(std::random_device{}());
+AI::AI() : gen(std::random_device{}()) {}
 
 Pos AI::get_move(Board const& board) {
     std::uniform_int_distribution<> dist(0, 2);
@@ -11,10 +12,22 @@ Pos AI::get_move(Board const& board) {
         move.i = dist(gen);
         move.j = dist(gen);
     }
-    std::cout << "[AI] I shall play... " << move << "\n";
+    out() << "[Reinforcement AI] I shall play... " << move << "\n";
     return move;
 }
 
-void AI::note_victory(Board const&) {}
-void AI::note_defeat(Board const&) {}
-void AI::note_draw(Board const&) {}
+void AI::note_new_game() {
+    states.clear();
+}
+
+void AI::note_victory(Board const& board) {
+    phase_data.set_value(board, 1);
+}
+
+void AI::note_defeat(Board const& board) {
+    phase_data.set_value(board, -2);
+}
+
+void AI::note_draw(Board const& board) {
+    phase_data.set_value(board, -1);
+}

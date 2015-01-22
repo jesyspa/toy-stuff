@@ -1,7 +1,10 @@
 #include "board.hpp"
 #include "ai.hpp"
+#include "random_ai.hpp"
 #include "human.hpp"
+#include "io.hpp"
 #include <iostream>
+#include <sstream>
 
 template<typename Player>
 bool get_move(Player& player, Board& board) {
@@ -16,37 +19,57 @@ bool get_move(Player& player, Board& board) {
     return false;
 }
 
-void play_round(AI& ai, Human& human) {
+template<typename PlayerX, typename PlayerO>
+void play_round(PlayerX& player_x, PlayerO& player_o) {
     Board board;
+    player_x.note_new_game();
+    player_o.note_new_game();
     while (std::cin) {
-        auto ai_won = get_move(ai, board);
+        auto ai_won = get_move(player_x, board);
         if (ai_won) {
-            human.note_defeat(board);
+            player_o.note_defeat(board);
             return;
         }
 
         if (board.is_full()) {
-            ai.note_draw(board);
-            human.note_draw(board);
+            player_x.note_draw(board);
+            player_o.note_draw(board);
             return;
         }
 
-        auto human_won = get_move(human, board);
+        auto human_won = get_move(player_o, board);
         if (human_won) {
-            ai.note_defeat(board);
+            player_x.note_defeat(board);
             return;
         }
 
         if (board.is_full()) {
-            ai.note_draw(board);
-            human.note_draw(board);
+            player_x.note_draw(board);
+            player_o.note_draw(board);
             return;
         }
     }
 }
 
+template<typename Player>
+void play_against_random(Player& player, State random_piece, int count) {
+    Random_AI rand_ai{random_piece};
+    auto& old_out = out();
+    std::ostringstream oss;
+    set_out(oss);
+    for (int i = 0; i < count; ++i) {
+        play_round(player, rand_ai);
+        oss.str("");
+    }
+    set_out(old_out);
+}
+
 int main() try {
     AI ai;
+
+    std::cout << "First playing a few thousand games against a random AI...\n";
+    play_against_random(ai, State::O, 100000);;
+
     Human human;
     while (std::cin)
         play_round(ai, human);

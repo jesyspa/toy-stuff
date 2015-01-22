@@ -1,9 +1,9 @@
 #pragma once
 #include "board.hpp"
-#include "position.hpp"
 
-struct Human {
-    static const State piece = State::O;
+struct Random_AI {
+    State piece;
+
     Pos get_move(Board const& board);
 
     void note_new_game();

@@ -24,6 +24,10 @@ void print_final_state(Board const& board) {
 }
 }
 
+void Human::note_new_game() {
+    std::cout << "A new game has begun!\n";
+}
+
 void Human::note_victory(Board const& board) {
     std::cout << "You have won!\n";
     print_final_state(board);
