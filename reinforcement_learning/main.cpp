@@ -66,13 +66,17 @@ void play_against_random(Player& player, State random_piece, int count) {
 
 int main() try {
     AI ai;
+    ai.silent = true;
 
     std::cout << "First playing a few thousand games against a random AI...\n";
-    play_against_random(ai, State::O, 100000);;
+    play_against_random(ai, State::O, 1'000'000);
 
     Human human;
-    while (std::cin)
+    ai.silent = false;
+    while (std::cin) {
+        ai.print_info();
         play_round(ai, human);
+    }
     std::cout << "Bye!\n";
 }
 catch (std::exception& e) {

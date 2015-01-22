@@ -10,10 +10,12 @@ unsigned get_pos(Board const& board) {
 }
 }
 
-float PhaseBoard::get_value(Board const& board) const {
+
+float const& PhaseBoard::operator[](Board const& board) const {
     return data[get_pos(board)];
 }
 
-void PhaseBoard::set_value(Board const& board, float value) {
-    data[get_pos(board)] = value;
+float& PhaseBoard::operator[](Board const& board) {
+    return data[get_pos(board)];
 }
+

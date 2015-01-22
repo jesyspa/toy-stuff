@@ -12,7 +12,19 @@ void Board::play(Pos pos, State new_state) {
     data[pos.i][pos.j] = new_state;
 }
 
-State Board::check_winner() const { return State::None; }
+State Board::check_winner() const { 
+    for (int i = 0; i < 3; ++i) {
+        if (data[i][0] != State::None && data[i][0] == data[i][1] && data[i][1] == data[i][2])
+            return data[i][0];
+        if (data[0][i] != State::None && data[0][i] == data[1][i] && data[1][i] == data[2][i])
+            return data[0][i];
+    }
+    if (data[0][0] != State::None && data[0][0] == data[1][1] && data[1][1] == data[2][2])
+        return data[0][0];
+    if (data[2][0] != State::None && data[2][0] == data[1][1] && data[1][1] == data[0][2])
+        return data[2][0];
+    return State::None;
+}
 
 bool Board::is_full() const {
     for (int i = 0; i < 3; ++i)
