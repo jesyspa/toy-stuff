@@ -19,4 +19,7 @@ private:
     PhaseBoard phase_data;
     std::vector<Board> states;
     std::mt19937 gen;
+
+    Pos play_exploratory(Board const& board);
+    Pos play_best(Board const& board);
 };
