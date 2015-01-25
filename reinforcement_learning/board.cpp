@@ -53,3 +53,28 @@ void Board::print() const {
         os << i;
     os << '\n';
 }
+
+Board operator*(Dihedral4 e, Board board) {
+    if (e.flip)
+        for (int i = 0; i < 3; ++i)
+            std::swap(board.data[i][0], board.data[i][2]);
+
+    Pos corner_indices[4] = {{0, 0}, {0, 2}, {2, 2}, {2, 0}};
+    Pos side_indices[4] = {{0, 1}, {1, 2}, {2, 1}, {1, 0}};
+    State corners[4];
+    State sides[4];
+    for (int i = 0; i < 4; ++i) {
+        auto ci = corner_indices[i];
+        auto si = side_indices[i];
+        corners[i] = board.data[ci.i][ci.j];
+        sides[i] = board.data[si.i][si.j];
+    }
+
+    for (int i = 0; i < 4; ++i) {
+        auto ci = corner_indices[i];
+        auto si = side_indices[i];
+        board.data[ci.i][ci.j] = corners[(i + e.rotate) % 4];
+        board.data[si.i][si.j] = sides[(i + e.rotate) % 4];
+    }
+    return board;
+}

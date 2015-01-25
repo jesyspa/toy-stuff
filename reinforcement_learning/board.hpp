@@ -1,5 +1,6 @@
 #pragma once
 #include "position.hpp"
+#include "dihedral_4.hpp"
 
 enum class State {
     None, X, O
@@ -15,3 +16,5 @@ struct Board {
     bool is_full() const;
     void print() const;
 };
+
+Board operator*(Dihedral4 e, Board board);

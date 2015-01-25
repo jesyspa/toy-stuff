@@ -3,6 +3,7 @@
 #include "random_ai.hpp"
 #include "human.hpp"
 #include "io.hpp"
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -78,7 +79,7 @@ T get_optional_input(std::string const& prompt, T def) {
 
 int main(int argc, char**) try {
     AI ai;
-    int training_count = 1'000'000;
+    int training_count = 100'000;
     if (argc > 1) {
         training_count = get_optional_input("Training sessions", training_count);
         ai.alpha = get_optional_input("alpha", AI::default_alpha);

@@ -1,4 +1,5 @@
 #include "phase_board.hpp"
+#include "dihedral_4.hpp"
 #include <algorithm>
 
 namespace {
@@ -9,6 +10,13 @@ unsigned get_pos(Board const& board) {
             result = 3*result + (unsigned)board.data[i][j];
     return result;
 }
+
+unsigned get_minimal_pos(Board const& board) {
+    unsigned result = PhaseBoard::board_size;
+    for (auto e : Dihedral4::elements)
+        result = std::min(get_pos(e * board), result);
+    return result;
+}
 }
 
 PhaseBoard::PhaseBoard() {
@@ -17,10 +25,10 @@ PhaseBoard::PhaseBoard() {
 
 
 float const& PhaseBoard::operator[](Board const& board) const {
-    return data[get_pos(board)];
+    return data[get_minimal_pos(board)];
 }
 
 float& PhaseBoard::operator[](Board const& board) {
-    return data[get_pos(board)];
+    return data[get_minimal_pos(board)];
 }
 
