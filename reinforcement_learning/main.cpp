@@ -5,6 +5,8 @@
 #include "io.hpp"
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <limits>
 
 template<typename Player>
 bool get_move(Player& player, Board& board) {
@@ -62,11 +64,31 @@ void play_against_random(Player& player, State random_piece, int count) {
     set_output_stream(old_out);
 }
 
-int main() try {
-    AI ai;
+template<typename T>
+T get_optional_input(std::string const& prompt, T def) {
+    std::cout << prompt << " [" << def << "]: ";
+    T val;
+    std::string str;
+    std::getline(std::cin, str);
+    std::istringstream ss(str);
+    if (ss >> val)
+        return val;
+    return def;
+}
 
-    std::cout << "First playing a few thousand games against a random AI...\n";
-    play_against_random(ai, State::O, 1'000'000);
+int main(int argc, char**) try {
+    AI ai;
+    int training_count = 1'000'000;
+    if (argc > 1) {
+        training_count = get_optional_input("Training sessions", training_count);
+        ai.alpha = get_optional_input("alpha", AI::default_alpha);
+        ai.alpha_step = get_optional_input("alpha step", AI::default_alpha_step);
+        ai.base_explore_chance = get_optional_input("base explore chance", AI::default_base_explore_chance);
+        ai.explore_step = get_optional_input("explore step", AI::default_explore_step);
+    }
+
+    std::cout << "Training...\n";
+    play_against_random(ai, State::O, training_count);
 
     Human human;
     while (std::cin) {

@@ -1,4 +1,5 @@
 #include "phase_board.hpp"
+#include <algorithm>
 
 namespace {
 unsigned get_pos(Board const& board) {
@@ -8,6 +9,10 @@ unsigned get_pos(Board const& board) {
             result = 3*result + (unsigned)board.data[i][j];
     return result;
 }
+}
+
+PhaseBoard::PhaseBoard() {
+    std::fill(std::begin(data), std::end(data), 0.5);
 }
 
 

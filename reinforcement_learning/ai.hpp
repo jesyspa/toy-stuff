@@ -8,7 +8,16 @@
 #include <random>
 
 struct AI {
-    static const State piece = State::X;
+    static constexpr State piece = State::X;
+    static constexpr double default_alpha = 0.5;
+    static constexpr double default_alpha_step = 0.999999;
+    static constexpr double default_base_explore_chance = 0.6;
+    static constexpr double default_explore_step = 0.5;
+
+    double alpha = default_alpha;
+    double alpha_step = default_alpha_step;
+    double base_explore_chance = default_base_explore_chance;
+    double explore_step = default_explore_step;
 
     AI();
     Pos get_move(Board const& board);
@@ -20,11 +29,7 @@ struct AI {
     void print_info() const;
 
 private:
-    double base_explore_chance = 0.8;
-    double explore_chance = 0.8;
-    double explore_step = 0.5;
-    double alpha = 0.5;
-    double alpha_step = 0.999999;
+    double explore_chance = base_explore_chance;
 
     int games = 0;
     int wins = 0;

@@ -84,12 +84,12 @@ void AI::note_victory(Board const& board) {
 
 void AI::note_defeat(Board const& board) {
     losses += 1;
-    phase_data[board] = -1;
+    phase_data[board] = 0;
     update_last_move(board);
 }
 
 void AI::note_draw(Board const& board) {
-    phase_data[board] = 0;
+    phase_data[board] = 0.5;
     update_last_move(board);
 }
 
