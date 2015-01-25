@@ -14,7 +14,7 @@ Pos Random_AI::get_move(Board const& board) {
         move.i = dist(gen);
         move.j = dist(gen);
     }
-    out() << "[Random AI] I shall play... " << move << "\n";
+    print("[Random AI] I shall play... ", move);
     return move;
 }
 

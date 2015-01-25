@@ -35,6 +35,8 @@ bool Board::is_full() const {
 }
 
 void Board::print() const {
+    if (!output_enabled())
+        return;
     auto& os = out();
     const char symbol[3] = {' ', 'X', 'O'};
     os << "   +---+\n";

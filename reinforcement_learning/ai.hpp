@@ -7,7 +7,6 @@
 
 struct AI {
     static const State piece = State::X;
-    bool silent = false;
 
     AI();
     Pos get_move(Board const& board);

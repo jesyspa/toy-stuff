@@ -16,16 +16,13 @@ Pos AI::get_move(Board const& board) {
     Board local = board;
     local.play(move, piece);
     states.push_back(local);
-    if (!silent) {
-        out() << "[Reinforcement AI] I shall play... " << move << "\n";
-        out() << "[Reinforcement AI] This move has value " << phase_data[local] << ".\n";
-    }
+    print("[Reinforcement AI] I shall play... ", move);
+    print("[Reinforcement AI] This move has value ", phase_data[local], '.');
     return move;
 }
 
 Pos AI::play_exploratory(Board const& board) {
-    if (!silent)
-        out() << "[Reinforcement AI] Let me experiment...\n";
+    print("[Reinforcement AI] Let me experiment...");
     std::uniform_int_distribution<> board_dist(0, 2);
     Pos move{-1, -1};
     while (!board.is_empty(move)) {
@@ -86,11 +83,6 @@ void AI::note_draw(Board const& board) {
 }
 
 void AI::print_info() const {
-    int total = 0;
-    for (unsigned i = 0; i < phase_data.board_size; ++i)
-        if (phase_data.data[i] != 0)
-            total += 1;
-    out() << "[Reinforcement AI] I have info about " << total << " positions.\n";
-    out() << "[Reinforcement AI] I have played " << games << " games, of which I won " << wins << " and lost " << losses << ".\n";
+    print("[Reinforcement AI] I have played ", games, " games, of which I won ", wins, " and lost ", losses, ".\n");
 }
 

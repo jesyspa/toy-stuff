@@ -55,24 +55,20 @@ template<typename Player>
 void play_against_random(Player& player, State random_piece, int count) {
     Random_AI rand_ai{random_piece};
     auto& old_out = out();
-    std::ostringstream oss;
-    set_out(oss);
+    disable_output();
     for (int i = 0; i < count; ++i) {
         play_round(player, rand_ai);
-        oss.str("");
     }
-    set_out(old_out);
+    set_output_stream(old_out);
 }
 
 int main() try {
     AI ai;
-    ai.silent = true;
 
     std::cout << "First playing a few thousand games against a random AI...\n";
     play_against_random(ai, State::O, 1'000'000);
 
     Human human;
-    ai.silent = false;
     while (std::cin) {
         ai.print_info();
         play_round(ai, human);
