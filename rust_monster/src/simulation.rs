@@ -70,7 +70,7 @@ mod tests {
                 boost_damage: 4,
                 max_boosts: 1,
             },
-            &vec![1]
+            &[1]
         ))
     }
 
@@ -90,7 +90,7 @@ mod tests {
                 boost_damage: 4,
                 max_boosts: 2,
             },
-            &vec![1, 1]
+            &[1, 1]
         ))
     }
 
@@ -109,7 +109,7 @@ mod tests {
                     max_boosts: 0,
                     boost_damage: 0
                 },
-                &vec![]
+                &[]
             )
         )
     }
@@ -147,7 +147,7 @@ mod tests {
                     max_boosts: 0,
                     boost_damage: 0
                 },
-                &vec![]
+                &[]
             )
         )
     }
@@ -193,7 +193,7 @@ mod tests {
                     max_boosts: 3,
                     boost_damage: 2
                 },
-                &vec![2, 0, 2]
+                &[2, 0, 2]
             )
         )
     }
@@ -212,7 +212,7 @@ mod tests {
                 max_boosts: 1,
                 boost_damage: 2,
             },
-            &vec![0, 0, 0],
+            &[0, 0, 0],
         );
     }
 
@@ -230,7 +230,7 @@ mod tests {
                 max_boosts: 1,
                 boost_damage: 2,
             },
-            &vec![2],
+            &[2],
         );
     }
 

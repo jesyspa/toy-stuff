@@ -4,7 +4,6 @@ pub struct Hero {
     pub damage: i32,
 }
 
-#[allow(dead_code)]
 #[derive(Debug, PartialEq, Eq)]
 pub struct Problem {
     pub monster_health: i32,
