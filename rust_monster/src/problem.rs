@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Hero {
     pub health: i32,
     pub damage: i32,
@@ -8,7 +8,6 @@ pub struct Hero {
 #[derive(Debug, PartialEq, Eq)]
 pub struct Problem {
     pub monster_health: i32,
-    pub monster_damage: i32,
     pub heroes: Vec<Hero>,
     pub chosen_hero: usize,
     pub boost_damage: i32,

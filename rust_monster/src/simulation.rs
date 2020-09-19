@@ -16,16 +16,8 @@ fn solution_is_valid(problem: &Problem, boosts: &Vec<usize>) -> bool {
 }
 
 fn apply_boosts(problem: &Problem, boosts: &Vec<usize>) -> Combat {
-    assert!(0 < problem.monster_damage);
     assert!(boosts.len() <= problem.max_boosts);
-    let mut heroes = Vec::<Hero>::with_capacity(problem.heroes.len());
-    for hero in &problem.heroes {
-        heroes.push(Hero {
-            damage: hero.damage,
-            // Round the health up.
-            health: 1 + (hero.health - 1) / problem.monster_damage,
-        });
-    }
+    let mut heroes = problem.heroes.clone();
     for boost in boosts {
         heroes[*boost].damage += problem.boost_damage;
     }
@@ -67,12 +59,11 @@ mod tests {
         assert!(solution_is_valid(
             &Problem {
                 monster_health: 14,
-                monster_damage: 5,
                 heroes: vec![Hero {
-                    health: 20,
+                    health: 10,
                     damage: 4
                 }, Hero {
-                    health: 20,
+                    health: 10,
                     damage: 4
                 }],
                 chosen_hero: 0,
@@ -88,12 +79,11 @@ mod tests {
         assert!(!solution_is_valid(
             &Problem {
                 monster_health: 14,
-                monster_damage: 5,
                 heroes: vec![Hero {
-                    health: 20,
+                    health: 10,
                     damage: 4
                 }, Hero {
-                    health: 20,
+                    health: 10,
                     damage: 4
                 }],
                 chosen_hero: 0,
@@ -114,7 +104,6 @@ mod tests {
             apply_boosts(
                 &Problem {
                     monster_health: 10,
-                    monster_damage: 10,
                     heroes: vec![],
                     chosen_hero: 0,
                     max_boosts: 0,
@@ -126,33 +115,17 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
-    fn no_monster_damage() {
-        apply_boosts(
-            &Problem {
-                monster_health: 10,
-                monster_damage: 0,
-                heroes: vec![],
-                chosen_hero: 0,
-                max_boosts: 0,
-                boost_damage: 0,
-            },
-            &vec![],
-        );
-    }
-
-    #[test]
     fn two_heroes_no_boosts() {
         assert_eq!(
             Combat {
                 monster_health: 10,
                 heroes: vec![
                     Hero {
-                        health: 1,
+                        health: 10,
                         damage: 5
                     },
                     Hero {
-                        health: 3,
+                        health: 10,
                         damage: 10
                     }
                 ]
@@ -160,14 +133,13 @@ mod tests {
             apply_boosts(
                 &Problem {
                     monster_health: 10,
-                    monster_damage: 10,
                     heroes: vec![
                         Hero {
                             health: 10,
                             damage: 5
                         },
                         Hero {
-                            health: 25,
+                            health: 10,
                             damage: 10
                         }
                     ],
@@ -187,15 +159,15 @@ mod tests {
                 monster_health: 10,
                 heroes: vec![
                     Hero {
-                        health: 1,
+                        health: 10,
                         damage: 5
                     },
                     Hero {
-                        health: 3,
+                        health: 10,
                         damage: 20
                     },
                     Hero {
-                        health: 4,
+                        health: 10,
                         damage: 10
                     },
                 ]
@@ -203,18 +175,17 @@ mod tests {
             apply_boosts(
                 &Problem {
                     monster_health: 10,
-                    monster_damage: 10,
                     heroes: vec![
                         Hero {
                             health: 10,
                             damage: 3
                         },
                         Hero {
-                            health: 21,
+                            health: 10,
                             damage: 20
                         },
                         Hero {
-                            health: 39,
+                            health: 10,
                             damage: 6
                         },
                     ],
@@ -233,7 +204,6 @@ mod tests {
         apply_boosts(
             &Problem {
                 monster_health: 10,
-                monster_damage: 10,
                 heroes: vec![Hero {
                     health: 10,
                     damage: 3,
@@ -252,7 +222,6 @@ mod tests {
         apply_boosts(
             &Problem {
                 monster_health: 10,
-                monster_damage: 10,
                 heroes: vec![Hero {
                     health: 10,
                     damage: 3,
