@@ -7,7 +7,7 @@ pub struct Combat {
 }
 
 #[allow(dead_code)]
-fn solution_is_valid(problem: &Problem, boosts: &Vec<usize>) -> bool {
+fn solution_is_valid(problem: &Problem, boosts: &[usize]) -> bool {
     assert!(problem.chosen_hero < problem.heroes.len());
     match find_hero_with_killing_blow(&apply_boosts(problem, boosts)) {
         Some(i) => problem.chosen_hero == i,
@@ -15,16 +15,16 @@ fn solution_is_valid(problem: &Problem, boosts: &Vec<usize>) -> bool {
     }
 }
 
-fn apply_boosts(problem: &Problem, boosts: &Vec<usize>) -> Combat {
+fn apply_boosts(problem: &Problem, boosts: &[usize]) -> Combat {
     assert!(boosts.len() <= problem.max_boosts);
     let mut heroes = problem.heroes.clone();
     for boost in boosts {
         heroes[*boost].damage += problem.boost_damage;
     }
-    return Combat {
+    Combat {
         monster_health: problem.monster_health,
-        heroes: heroes,
-    };
+        heroes,
+    }
 }
 
 fn find_hero_with_killing_blow(combat: &Combat) -> Option<usize> {
@@ -47,7 +47,7 @@ fn find_hero_with_killing_blow(combat: &Combat) -> Option<usize> {
             first_hero_damage = 0;
         }
     }
-    return None;
+    None
 }
 
 #[cfg(test)]
