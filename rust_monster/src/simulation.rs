@@ -1,13 +1,12 @@
 use problem::{Hero, Problem};
 
 #[derive(Debug, PartialEq, Eq)]
-pub struct Combat {
+struct Combat {
     pub monster_health: i32,
     pub heroes: Vec<Hero>,
 }
 
-#[allow(dead_code)]
-fn solution_is_valid(problem: &Problem, boosts: &[usize]) -> bool {
+pub fn solution_is_valid(problem: &Problem, boosts: &[usize]) -> bool {
     assert!(problem.chosen_hero < problem.heroes.len());
     match find_hero_with_killing_blow(&apply_boosts(problem, boosts)) {
         Some(i) => problem.chosen_hero == i,
@@ -59,13 +58,16 @@ mod tests {
         assert!(solution_is_valid(
             &Problem {
                 monster_health: 14,
-                heroes: vec![Hero {
-                    health: 10,
-                    damage: 4
-                }, Hero {
-                    health: 10,
-                    damage: 4
-                }],
+                heroes: vec![
+                    Hero {
+                        health: 10,
+                        damage: 4
+                    },
+                    Hero {
+                        health: 10,
+                        damage: 4
+                    }
+                ],
                 chosen_hero: 0,
                 boost_damage: 4,
                 max_boosts: 1,
@@ -79,13 +81,16 @@ mod tests {
         assert!(!solution_is_valid(
             &Problem {
                 monster_health: 14,
-                heroes: vec![Hero {
-                    health: 10,
-                    damage: 4
-                }, Hero {
-                    health: 10,
-                    damage: 4
-                }],
+                heroes: vec![
+                    Hero {
+                        health: 10,
+                        damage: 4
+                    },
+                    Hero {
+                        health: 10,
+                        damage: 4
+                    }
+                ],
                 chosen_hero: 0,
                 boost_damage: 4,
                 max_boosts: 2,

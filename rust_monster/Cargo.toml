@@ -3,4 +3,13 @@ name = "rust_monster"
 version = "0.1.0"
 authors = ["Anton Golov <jesyspa@gmail.com>"]
 
+[lib]
+name = "rust_monster"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rust_monster_solver"
+path = "src/bin/main.rs"
+
 [dependencies]
+lp-modeler = "0.4.2"

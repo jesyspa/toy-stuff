@@ -1,6 +1,6 @@
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Hero {
-    pub health: i32,
+    pub health: usize,
     pub damage: i32,
 }
 
