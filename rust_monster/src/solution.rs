@@ -1,4 +1,5 @@
 use lp_modeler::dsl::*;
+use lp_modeler::format::lp_format::LpFileFormat;
 use lp_modeler::solvers::{CbcSolver, SolverTrait, Status};
 use problem::{Hero, Problem};
 
@@ -50,7 +51,6 @@ pub fn solve(problem: &Problem) -> Option<Vec<usize>> {
 
     {
         let max_boost_damage = problem.max_boosts as i32 * problem.boost_damage;
-        let max_total_damage = 10000; // TODO: compute
 
         let mut remaining_health = problem.monster_health;
         let mut active_phase = 0;
@@ -77,6 +77,7 @@ pub fn solve(problem: &Problem) -> Option<Vec<usize>> {
                 pre_chosen_constraints
                     .push(turn as i32 * problem.boost_damage * &chosen_hero_boost.rep);
 
+                let max_total_damage = (turn as i32 + 1) * max_boost_damage + combat.chosen_damage;
                 // If the stage has been chosen, we need an upper bound on the damage done
                 // before the chosen hero and a lower bound on the damage done by the chosen
                 // hero themselves.
@@ -106,17 +107,20 @@ pub fn solve(problem: &Problem) -> Option<Vec<usize>> {
         lp += lp_sum(&stages);
     }
 
+    lp.write_lp("test.lp").unwrap();
     let solver = CbcSolver::new();
     let (status, results) = solver.run(&lp).unwrap();
+    println!("Result: {:?} {:?}", status, results);
     match status {
         Status::Infeasible => None,
         Status::Optimal => {
-            if stage_labels.iter().all(|label| results[label] == 0.0) {
+            println!("Stages: {:?}", stage_labels);
+            if stage_labels.iter().all(|label| *results.get(label).unwrap_or(&0.0) == 0.0) {
                 return None;
             }
             let mut result = Vec::new();
             for boost in &boosts {
-                for _ in 0..(results[&boost.label] as usize) {
+                for _ in 0..(*results.get(&boost.label).unwrap_or(&0.0) as usize) {
                     result.push(boost.index)
                 }
             }
