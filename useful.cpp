@@ -8,7 +8,30 @@ using i64 = long long int;
 
 template<typename T>
 T read() { T t; std::cin >> t; return t; }
-#define READ(T, x) const T x = read<T>()
+#define READ(T, x) T const x = read<T>()
+
+template<typename T>
+struct ShowVecImpl {
+  ShowVecImpl(std::vector<T> const& v) : v(&v) {}
+  std::vector<T> const* v;
+};
+
+template<typename T>
+ShowVecImpl<T> show(std::vector<T> const& v) { return ShowVecImpl<T>(v); }
+
+template<typename T>
+std::ostream& operator<<(std::ostream& os, ShowVecImpl<T> pvi) {
+  auto const& v = *pvi.v;
+  os << '{';
+  if (!v.empty()) {
+    os << v[0];
+    for (size_t i = 1; i < v.size(); ++i) {
+      os << ", " << v[i];
+    }
+  }
+  os << '}';
+  return os;
+}
 
 struct Node {
   std::vector<size_t> edges;
