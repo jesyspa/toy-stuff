@@ -14,7 +14,8 @@ mod benchmarks {
     use crate::array_of_pointers;
     use crate::pointer_to_array;
     use test::Bencher;
-    use rand::{Rng, thread_rng};
+    use rand::{Rng, SeedableRng};
+    use rand::rngs::StdRng;
 
     const MIN_STR_LENGTH: usize = 2;
     const MAX_STR_LENGTH: usize = 8;
@@ -23,6 +24,7 @@ mod benchmarks {
     const MIN_PREFIX_LENGTH: usize = 0;
     const MAX_PREFIX_LENGTH: usize = 8;
     const NUM_INSTRUCTIONS: usize = 10000;
+    const SEED: u64 = 12345678;
 
     fn rand_string<T>(rng: &mut T, len: usize) -> String
     where T: Rng
@@ -58,7 +60,7 @@ mod benchmarks {
 
     impl Inputs {
         fn new(n: usize) -> Inputs {
-            let mut rng = thread_rng();
+            let mut rng: StdRng = SeedableRng::seed_from_u64(SEED);
             let mut inputs: Inputs = Default::default();
             for _ in 0..n {
                 inputs.insertions.push(rand_insertion(&mut rng));
@@ -74,13 +76,15 @@ mod benchmarks {
     fn bench_pointer_to_array(b: &mut Bencher) {
         let inputs = Inputs::new(NUM_INSTRUCTIONS);
         b.iter(|| {
+            let mut total: i32 = 0;
             let mut ms = pointer_to_array::MapSum::new();
             for (s, v) in &inputs.insertions {
                 ms.insert(s, *v);
             }
             for s in &inputs.queries {
-                ms.sum(s);
+                total += ms.sum(s);
             }
+            total
         });
     }
 
@@ -88,13 +92,15 @@ mod benchmarks {
     fn bench_array_of_pointers(b: &mut Bencher) {
         let inputs = Inputs::new(NUM_INSTRUCTIONS);
         b.iter(|| {
+            let mut total: i32 = 0;
             let mut ms = array_of_pointers::MapSum::new();
             for (s, v) in &inputs.insertions {
                 ms.insert(s, *v);
             }
             for s in &inputs.queries {
-                ms.sum(s);
+                total += ms.sum(s);
             }
+            total
         });
     }
 }
