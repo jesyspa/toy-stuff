@@ -9,6 +9,8 @@ using i64 = long long int;
 template<typename T>
 T read() { T t; std::cin >> t; return t; }
 #define READ(T, x) T const x = read<T>()
+#define MIN(x, y) do { x = std::min(x, y); } while(0)
+#define MAX(x, y) do { x = std::max(x, y); } while(0)
 
 template<typename T>
 struct ShowVecImpl {
