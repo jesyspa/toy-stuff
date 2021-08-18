@@ -3,3 +3,5 @@
 *.ibc
 *.idr~
 *.bin
+Cargo.lock
+target/
