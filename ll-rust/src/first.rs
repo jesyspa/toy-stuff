@@ -53,6 +53,12 @@ impl List {
     }
 }
 
+impl Default for List {
+    fn default() -> Self {
+        List::new()
+    }
+}
+
 impl Drop for List {
     fn drop(&mut self) {
         while let Link::More(_) = self.pop_node() {}
