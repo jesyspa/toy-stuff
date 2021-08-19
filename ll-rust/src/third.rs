@@ -17,7 +17,9 @@ impl<T> List<T> {
     }
 
     fn prepend_node(&self, node: Node<T>) -> List<T> {
-        List { head: Some(Rc::new(node)) }
+        List {
+            head: Some(Rc::new(node)),
+        }
     }
 
     pub fn prepend(&self, t: T) -> List<T> {
@@ -28,7 +30,9 @@ impl<T> List<T> {
     }
 
     pub fn tail(&self) -> List<T> {
-        List { head: self.head.as_ref().and_then(|node| node.next.clone()) }
+        List {
+            head: self.head.as_ref().and_then(|node| node.next.clone()),
+        }
     }
 
     pub fn head(&self) -> Option<&T> {
@@ -48,7 +52,9 @@ pub struct Iter<'a, T> {
 
 impl<T> List<T> {
     pub fn iter(&self) -> Iter<T> {
-        Iter { next: self.head.as_deref() }
+        Iter {
+            next: self.head.as_deref(),
+        }
     }
 }
 

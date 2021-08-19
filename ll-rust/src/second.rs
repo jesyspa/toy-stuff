@@ -85,7 +85,9 @@ pub struct Iter<'a, T> {
 
 impl<T> List<T> {
     pub fn iter(&self) -> Iter<T> {
-        Iter { next: self.head.as_deref() }
+        Iter {
+            next: self.head.as_deref(),
+        }
     }
 }
 
@@ -106,7 +108,9 @@ pub struct IterMut<'a, T> {
 
 impl<T> List<T> {
     pub fn iter_mut(&mut self) -> IterMut<T> {
-        IterMut { next: self.head.as_deref_mut() }
+        IterMut {
+            next: self.head.as_deref_mut(),
+        }
     }
 }
 
