@@ -6,9 +6,9 @@ pub mod pointer_to_array;
 mod benchmarks {
     use super::array_of_pointers;
     use super::pointer_to_array;
-    use test::Bencher;
-    use rand::{Rng, SeedableRng};
     use rand::rngs::StdRng;
+    use rand::{Rng, SeedableRng};
+    use test::Bencher;
 
     const MIN_STR_LENGTH: usize = 2;
     const MAX_STR_LENGTH: usize = 8;
@@ -20,7 +20,8 @@ mod benchmarks {
     const SEED: u64 = 12345678;
 
     fn rand_string<T>(rng: &mut T, len: usize) -> String
-    where T: Rng
+    where
+        T: Rng,
     {
         let mut string = String::new();
         for _ in 0..len {
@@ -30,25 +31,27 @@ mod benchmarks {
     }
 
     fn rand_insertion<T>(rng: &mut T) -> (String, i32)
-    where T: Rng
+    where
+        T: Rng,
     {
-        let len = rng.gen_range(MIN_STR_LENGTH ..= MAX_STR_LENGTH);
-        let value = rng.gen_range(MIN_STR_VALUE ..= MAX_STR_VALUE);
+        let len = rng.gen_range(MIN_STR_LENGTH..=MAX_STR_LENGTH);
+        let value = rng.gen_range(MIN_STR_VALUE..=MAX_STR_VALUE);
         let string = rand_string(rng, len);
         (string, value)
     }
 
     fn rand_query<T>(rng: &mut T) -> String
-    where T: Rng
+    where
+        T: Rng,
     {
-        let len = rng.gen_range(MIN_PREFIX_LENGTH ..= MAX_PREFIX_LENGTH);
+        let len = rng.gen_range(MIN_PREFIX_LENGTH..=MAX_PREFIX_LENGTH);
         rand_string(rng, len)
     }
 
     #[derive(Default)]
     struct Inputs {
         insertions: Vec<(String, i32)>,
-        queries: Vec<String>
+        queries: Vec<String>,
     }
 
     impl Inputs {

@@ -37,17 +37,12 @@ impl MapSum {
     pub fn sum(&self, prefix: &str) -> i32 {
         match prefix.bytes().next().map(to_index) {
             None => self.sum,
-            Some(ix) => {
-                match &self.children {
-                    None => 0,
-                    Some(arr) => {
-                        arr[ix].sum(&prefix[1..])
-                    }
-                }
-            }
+            Some(ix) => match &self.children {
+                None => 0,
+                Some(arr) => arr[ix].sum(&prefix[1..]),
+            },
         }
     }
-
 }
 
 #[cfg(test)]

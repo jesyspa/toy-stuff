@@ -23,7 +23,10 @@ impl MapSum {
                 if self.children[ix].is_none() {
                     self.children[ix] = Some(Box::new(MapSum::new()));
                 }
-                change = self.children[ix].as_mut().unwrap().insert_impl(&key[1..], val);
+                change = self.children[ix]
+                    .as_mut()
+                    .unwrap()
+                    .insert_impl(&key[1..], val);
             }
         }
         self.sum += change;
@@ -37,17 +40,12 @@ impl MapSum {
     pub fn sum(&self, prefix: &str) -> i32 {
         match prefix.bytes().next().map(to_index) {
             None => self.sum,
-            Some(ix) => {
-                match self.children[ix].as_ref() {
-                    None => 0,
-                    Some(q) => {
-                        q.sum(&prefix[1..])
-                    }
-                }
-            }
+            Some(ix) => match self.children[ix].as_ref() {
+                None => 0,
+                Some(q) => q.sum(&prefix[1..]),
+            },
         }
     }
-
 }
 
 #[cfg(test)]

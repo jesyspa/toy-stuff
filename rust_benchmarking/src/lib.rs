@@ -1,8 +1,8 @@
 #![feature(test)]
-#[cfg(test)]
-
-extern crate test;
 extern crate rand;
+#[cfg(test)]
+extern crate test;
 
-pub mod ptrs_vs_arrays;
 mod common;
+pub mod ptrs_vs_arrays;
+pub mod sums;
