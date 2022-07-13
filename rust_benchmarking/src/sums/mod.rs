@@ -10,7 +10,7 @@ mod benchmarks {
     use super::by_table;
     use test::Bencher;
 
-    const BENCH_VALUES: [u64; 6] = [5, 10, 20, 40, 80, 160];
+    const BENCH_VALUES: [u64; 1] = [800];
 
     #[test]
     fn test_correctness() {

@@ -27,12 +27,7 @@ impl TableSumSplitter {
 
     // Note that by construction we know k ≤ n.
     pub fn compute_impl(&self, n: u64, k: u64) -> u64 {
-        let mut v = 0;
-        for i in 1..=k {
-            v += self.read(n - i, i);
-            v %= MODULUS;
-        }
-        v
+        (self.read(n, k-1) + self.read(n-k, k)) % MODULUS
     }
 
     pub fn compute(&mut self, n_orig: u64) -> u64 {

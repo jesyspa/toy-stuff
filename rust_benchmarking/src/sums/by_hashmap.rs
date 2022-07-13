@@ -10,12 +10,8 @@ impl MemoSumSplitter {
         if n == 0 || k == 1 {
             return 1;
         }
-        let mut v = 0;
-        for i in 1..=k.min(n) {
-            v += self.split_rec(n - i, i);
-            v %= MODULUS;
-        }
-        v
+        if k > n { return self.split_rec(n, n); }
+        (self.split_rec(n, k-1) + self.split_rec(n-k, k)) % MODULUS
     }
 
     pub fn split_rec(&mut self, n: u64, k: u64) -> u64 {
@@ -23,7 +19,6 @@ impl MemoSumSplitter {
             return v;
         }
         let v = self.split_rec_impl(n, k);
-        dbg!((n, k, v));
         self.0.insert((n, k), v);
         v
     }
