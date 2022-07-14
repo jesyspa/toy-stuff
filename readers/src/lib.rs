@@ -150,6 +150,7 @@ impl<R: BufRead, S> ProblemReader<R, S> {
     }
 }
 
+/*
 use std::io::BufReader;
 
 impl ProblemReader<BufReader<&[u8]>, String> {
@@ -157,12 +158,12 @@ impl ProblemReader<BufReader<&[u8]>, String> {
     fn from_string(s: String) -> Self {
         ProblemReader(BufReader::new(s.as_bytes()), s)
     }
-}
+} */
 
 #[cfg(test)]
 mod tests {
     use std::io::{BufRead, BufReader};
-    use super::{InPlaceRead, drop_whitespace, ProblemReader};
+    use super::{InPlaceRead, drop_whitespace/*, ProblemReader*/};
 
     #[test]
     fn read_unsigned_test() {

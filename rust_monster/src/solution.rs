@@ -127,7 +127,7 @@ pub fn solve(problem: &Problem) -> Option<Vec<usize>> {
             Some(result)
         }
         _ => {
-            panic!(format!("Unexpected status: {:?}", status));
+            panic!("Unexpected status: {:?}", status);
         }
     }
 }
