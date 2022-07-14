@@ -11,10 +11,11 @@ pub struct TicketLock {
 impl TicketLock {
     pub fn new() -> Self { Self::default() }
 
-    pub fn acquire(&self) {
+    pub fn acquire(&self, bad_hits: &AtomicUsize) {
         let ticket = self.next.fetch_add(1, Ordering::SeqCst);
         while let Err(_) = self.active.compare_exchange(ticket, ticket, Ordering::SeqCst, Ordering::SeqCst) {
             hint::spin_loop();
+            bad_hits.fetch_add(1, Ordering::Relaxed);
         }
     } 
 
@@ -28,21 +29,26 @@ mod test {
     use super::TicketLock;
     use std::cell::UnsafeCell;
     use std::sync::Arc;
+    use std::sync::atomic::{AtomicUsize, Ordering};
     use std::thread;
 
     #[test]
     fn test_single_thread() {
         let lock = TicketLock::new();
-        lock.acquire();
+        let n = AtomicUsize::new(0);
+        lock.acquire(&n);
         lock.release();
+        assert_eq!(n.load(Ordering::SeqCst), 0);
     }
 
     #[test]
     fn test_double_release() {
         let lock = TicketLock::new();
-        lock.acquire();
+        let n = AtomicUsize::new(0);
+        lock.acquire(&n);
         lock.release();
         lock.release();
+        assert_eq!(n.load(Ordering::SeqCst), 0);
     }
 
     struct UnsafeI32(UnsafeCell<i32>);
@@ -68,19 +74,20 @@ mod test {
     struct TestState {
         lock: TicketLock,
         n: UnsafeI32,
+        bad_hits: AtomicUsize,
     }
 
     #[test]
     fn test_multithread_release() {
         let state = Arc::new(TestState::default());
         let mut threads = Vec::new();
-        const NUM_THREADS: i32 = 10;
+        const NUM_THREADS: i32 = 13;
         const NUM_ITERS: i32 = 1000;
         for _ in 0..NUM_THREADS {
-            let state_clone = state.clone();
+            let state_clone = Arc::clone(&state);
             threads.push(thread::spawn(move|| {
                 for _ in 0..NUM_ITERS {
-                    state_clone.lock.acquire();
+                    state_clone.lock.acquire(&state_clone.bad_hits);
                     unsafe { state_clone.n.inc(); }
                     state_clone.lock.release();
                 }
@@ -92,5 +99,6 @@ mod test {
         }
 
         unsafe { assert_eq!(state.n.get(), NUM_THREADS * NUM_ITERS); }
+        println!("{}", state.bad_hits.load(Ordering::SeqCst));
     }
 }
