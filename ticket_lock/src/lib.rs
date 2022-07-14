@@ -13,7 +13,7 @@ impl TicketLock {
 
     pub fn acquire(&self, bad_hits: &AtomicUsize) {
         let ticket = self.next.fetch_add(1, Ordering::SeqCst);
-        while let Err(_) = self.active.compare_exchange(ticket, ticket, Ordering::SeqCst, Ordering::SeqCst) {
+        while self.active.load(Ordering::SeqCst) != ticket {
             hint::spin_loop();
             bad_hits.fetch_add(1, Ordering::Relaxed);
         }
