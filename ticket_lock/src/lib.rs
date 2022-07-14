@@ -50,9 +50,11 @@ mod test {
     unsafe impl Send for UnsafeI32 {} 
     unsafe impl Sync for UnsafeI32 {} 
 
-    impl UnsafeI32 {
-        fn new() -> Self { return UnsafeI32(UnsafeCell::new(0)) }
+    impl Default for UnsafeI32 {
+        fn default() -> Self { return UnsafeI32(UnsafeCell::new(0)) }
+    }
 
+    impl UnsafeI32 {
         unsafe fn inc(&self) {
             *self.0.get() += 1;
         }
@@ -62,21 +64,25 @@ mod test {
         }
     }
 
+    #[derive(Default)]
+    struct TestState {
+        lock: TicketLock,
+        n: UnsafeI32,
+    }
+
     #[test]
     fn test_multithread_release() {
-        let lock = Arc::new(TicketLock::new());
-        let n = Arc::new(UnsafeI32::new());
+        let state = Arc::new(TestState::default());
         let mut threads = Vec::new();
-        const NUM_THREADS: i32 = 50;
-        const NUM_ITERS: i32 = 300;
+        const NUM_THREADS: i32 = 10;
+        const NUM_ITERS: i32 = 1000;
         for _ in 0..NUM_THREADS {
-            let lock_clone = lock.clone();
-            let n_clone = n.clone();
+            let state_clone = state.clone();
             threads.push(thread::spawn(move|| {
                 for _ in 0..NUM_ITERS {
-                    lock_clone.acquire();
-                    unsafe { n_clone.inc(); }
-                    lock_clone.release();
+                    state_clone.lock.acquire();
+                    unsafe { state_clone.n.inc(); }
+                    state_clone.lock.release();
                 }
             }))
         }
@@ -85,6 +91,6 @@ mod test {
             t.join().expect("Join error.");
         }
 
-        unsafe { assert_eq!(n.get(), NUM_THREADS * NUM_ITERS); }
+        unsafe { assert_eq!(state.n.get(), NUM_THREADS * NUM_ITERS); }
     }
 }
